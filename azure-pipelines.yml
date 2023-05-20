@@ -28,6 +28,7 @@ jobs:
         AZP_AGENT_NAME: 'aci-agent'
   - job: TestACIAgent
     displayName: Run a script on new aci agent
+    pool: aci-agent-pool
     dependsOn: CreateACIAgent
     steps:
       - task: Bash@3
@@ -36,6 +37,8 @@ jobs:
           script: 'echo ''Hello world'''
   - job: DeleteACIAgent
     dependsOn: TestACIAgent
+    pool: 
+      vmImage: 'ubuntu-latest'
     displayName: Delete ACI Agent
     steps:
       - task: AzureCLI@2
@@ -47,6 +50,3 @@ jobs:
             az container create \
             -g rgrp-test001 \
             --name aci-agent001
-  
-        
-    
