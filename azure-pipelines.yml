@@ -26,5 +26,27 @@ jobs:
         AZP_TOKEN: $(AZP_TOKEN)
         AZP_POOL: 'aci-agent-pool'
         AZP_AGENT_NAME: 'aci-agent'
+  - job: TestACIAgent
+    displayName: Run a script on new aci agent
+    dependsOn: CreateACIAgent
+    steps:
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: 'echo ''Hello world'''
+  - job: DeleteACIAgent
+    dependsOn: TestACIAgent
+    displayName: Delete ACI Agent
+    steps:
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: 'serviceconnection-test001'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az container create \
+            -g rgrp-test001 \
+            --name aci-agent001
+  
         
     
