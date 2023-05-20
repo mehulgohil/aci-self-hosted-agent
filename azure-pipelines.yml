@@ -1,0 +1,29 @@
+trigger:
+- main
+
+jobs:
+  - job: CreateACIAgent
+    displayName: Create ACI Agent
+    pool: 'ubuntu-latest'
+    steps:
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'serviceconnection-test001'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az container create \
+          -g rgrp-test001 \
+          --name aci-agent001 \
+          --cpu 2 \
+          --memory 3.5 \
+          --image acrtest001.azurecr.io/aci-agent:latest \
+          --subnet default \
+          --vnet vnet-test001
+      env:
+        AZP_URL: 'https://dev.azure.com/MehulGohil0792'
+        AZP_TOKEN: $(AZP_TOKEN)
+        AZP_POOL: 'aci-agent-pool'
+        AZP_AGENT_NAME: 'aci-agent'
+        
+    
